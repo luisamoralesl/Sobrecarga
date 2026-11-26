@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101b31">
+  <title>Sobrecarga de operadores en C++ · Guía interactiva</title>
+  <script>
+    try {
+      const savedTheme = localStorage.getItem('sobrecarga-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) document.documentElement.classList.add('dark-mode');
+    } catch (_) {}
+  </script>
+  <style>
+    :root{--ink:#17243b;--muted:#63718a;--paper:#f5f6f9;--card:#fff;--line:#dfe5ee;--navy:#101b31;--navy2:#1a2946;--teal:#087e78;--teal-soft:#dff3ef;--lime:#c7f36c;--violet:#7058c7;--violet-soft:#eee9ff;--amber:#e5a63b;--red:#b74649;--shadow:0 12px 36px rgba(24,39,68,.08);--code:#111b2e;--code-ink:#e9effa;--radius:18px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:82px}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.62 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit}.topbar{height:64px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:0 max(22px,calc((100vw - 1440px)/2));background:rgba(16,27,49,.96);color:#fff;backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.12)}.brand{display:flex;align-items:center;gap:10px;min-width:245px;font-size:13px;font-weight:750;letter-spacing:.04em}.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--lime);color:var(--navy);font:800 13px ui-monospace,monospace}.top-mid{display:flex;align-items:center;gap:12px;flex:1;color:#c4cde0;font-size:12px}.progress-track{height:5px;flex:1;max-width:300px;border-radius:10px;background:#37445b;overflow:hidden}.progress-fill{height:100%;width:0;background:var(--lime);transition:width .3s}.top-actions{display:flex;align-items:center;gap:10px}.top-actions button{border:1px solid #45526a;border-radius:999px;background:#1b2941;color:#fff;padding:7px 12px;font-size:12px}.top-actions button:hover{border-color:var(--lime);color:var(--lime)}.shell{max-width:1440px;margin:auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:34px;padding:30px 28px 100px}.sidebar{position:sticky;top:92px;align-self:start;max-height:calc(100vh - 112px);overflow:auto;padding:18px 14px;border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:0 5px 20px rgba(24,39,68,.035)}.side-label{margin:0 0 10px 10px;color:#8a95a7;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.13em}.toc{list-style:none;padding:0;margin:0}.toc li+li{margin-top:3px}.toc a{display:flex;gap:9px;align-items:center;text-decoration:none;padding:8px 10px;border-radius:9px;color:#53617a;font-size:12px;font-weight:620;line-height:1.35}.toc a:hover,.toc a.active{background:#e8f4f2;color:#086c67}.toc-num{width:21px;color:#9aa4b4;font:700 10px ui-monospace,monospace}.side-note{margin:18px 5px 3px;padding:11px 12px;border-radius:11px;background:#f3f5f8;color:#69758b;font-size:11px}.content{min-width:0;max-width:1000px}.hero{position:relative;overflow:hidden;min-height:345px;padding:48px 52px;border-radius:26px;background:linear-gradient(125deg,#101b31 0%,#172849 62%,#243765 100%);color:#fff;box-shadow:var(--shadow)}.hero:after{content:"+";position:absolute;right:43px;top:-69px;color:rgba(199,243,108,.13);font:350px/1 ui-monospace,monospace;transform:rotate(12deg);pointer-events:none}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--lime);font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.eyebrow:before{content:"";width:22px;height:2px;background:currentColor}.hero h1{max-width:700px;margin:22px 0 13px;font-size:clamp(42px,6vw,70px);line-height:.99;letter-spacing:-.055em}.hero h1 span{color:var(--lime)}.hero .sub{max-width:650px;color:#c5d0e3;font-size:17px}.hero-question{position:relative;z-index:1;display:flex;gap:12px;align-items:flex-start;max-width:760px;margin-top:30px;padding:14px 17px;border:1px solid rgba(199,243,108,.32);border-radius:12px;background:rgba(255,255,255,.05);font-size:14px}.hero-question b{color:var(--lime)}.hero-meta{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.pill{display:inline-flex;gap:7px;align-items:center;border-radius:99px;padding:5px 10px;background:rgba(255,255,255,.1);color:#d5deee;font-size:11px}.pill .dot{width:6px;height:6px;border-radius:50%;background:var(--lime)}.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0 42px}.intro-card{padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:var(--card)}.intro-card .tiny{color:var(--teal);font-size:10px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}.intro-card p{margin:8px 0 0;color:#46546b;font-size:14px}.section{scroll-margin-top:84px;margin:50px 0}.section-head{display:flex;align-items:flex-start;gap:15px;margin-bottom:21px}.section-index{display:grid;place-items:center;flex:0 0 38px;height:38px;border-radius:12px;background:var(--teal-soft);color:var(--teal);font:800 12px ui-monospace,monospace}.section-head h2{margin:0;color:var(--navy);font-size:28px;letter-spacing:-.035em;line-height:1.2}.section-head p{margin:6px 0 0;color:var(--muted);font-size:14px}.card{padding:22px 24px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:0 6px 22px rgba(24,39,68,.035)}.card+.card{margin-top:13px}.card h3{margin:0 0 9px;font-size:18px;letter-spacing:-.02em}.card p{margin:8px 0;color:#4f5c72}.lead{font-size:16px;color:#3e4d64}.concept-strip{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.accent-card{background:var(--navy);color:#fff;border:0}.accent-card h3{color:#fff}.accent-card p{color:#c8d2e3}.inline-code{display:inline-block;padding:2px 7px;border-radius:5px;background:#e9edf4;color:#153e4f;font:600 .9em ui-monospace,monospace}.accent-card .inline-code{background:#263958;color:#d9ef9d}.callout{display:flex;gap:13px;padding:16px 19px;border-radius:13px;background:var(--violet-soft);color:#4d3e88}.callout strong{display:block;color:#352668}.callout .icon{font-size:20px}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.mini-card{padding:18px 19px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.mini-card h4{margin:0 0 8px;font-size:14px}.mini-card ul{margin:0;padding-left:19px;color:#56637a;font-size:13px}.good{border-top:3px solid var(--teal)}.questionable{border-top:3px solid var(--amber)}.rule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.rule{display:flex;gap:12px;padding:15px 16px;border:1px solid var(--line);border-radius:13px;background:var(--card)}.rule-num{display:grid;place-items:center;flex:0 0 27px;height:27px;border-radius:8px;background:#eef1f6;color:#65728a;font:800 11px ui-monospace,monospace}.rule p{margin:0;color:#505d72;font-size:13px}.rule strong{color:var(--navy)}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:13px 15px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:#f0f3f7;color:#49576d;font-size:11px;text-transform:uppercase;letter-spacing:.06em}tr:last-child td{border-bottom:0}td{color:#536077}.friend-note{margin-top:12px;padding:13px 16px;border-left:3px solid var(--violet);background:#f5f2ff;border-radius:0 10px 10px 0;color:#564c75;font-size:13px}.lab{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center;padding:20px;border-radius:17px;background:#e8f4f2;border:1px solid #cce8e3}.lab h3{margin:0 0 4px}.lab p{margin:0;color:#526c69;font-size:13px}.lab-controls{display:flex;gap:8px;flex-wrap:wrap}.lab-controls button{border:1px solid #b5d8d2;border-radius:10px;background:#fff;color:#176e68;padding:8px 11px;font-size:12px;font-weight:700}.lab-controls button:hover,.lab-controls button[aria-pressed="true"]{background:var(--teal);color:#fff;border-color:var(--teal)}.lab-result{grid-column:1/-1;min-height:45px;padding:11px 13px;border-radius:10px;background:#fff;color:#485770;font-size:13px}.case{margin:20px 0;padding:0;border:1px solid var(--line);border-radius:19px;background:var(--card);overflow:hidden;box-shadow:0 6px 22px rgba(24,39,68,.035)}.case-head{display:flex;align-items:center;gap:14px;padding:19px 22px;border-bottom:1px solid var(--line)}.case-badge{padding:5px 9px;border-radius:8px;background:var(--navy);color:var(--lime);font:700 10px ui-monospace,monospace;white-space:nowrap}.case-head h3{margin:0;font-size:19px;letter-spacing:-.025em}.case-head p{margin:2px 0 0;color:var(--muted);font-size:12px}.case-body{padding:20px 22px}.case-body>p{margin:0 0 13px;color:#4f5d74;font-size:14px}.result-line{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:9px;background:#eff6e6;color:#42631e;font:600 12px ui-monospace,monospace}.code-box{margin:15px 0 0;border-radius:13px;background:var(--code);overflow:hidden}.code-top{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-bottom:1px solid rgba(255,255,255,.1);color:#aebbd1;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.code-top button{border:1px solid #3d4a61;border-radius:7px;background:#1d2a40;color:#dbe5f6;padding:5px 9px;font-size:10px}.code-top button:hover{border-color:var(--lime);color:var(--lime)}pre{margin:0;padding:16px;overflow:auto;color:var(--code-ink);font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4}.analysis{margin-top:14px;padding:13px 15px;border-radius:11px;background:#f4f6f9}.analysis strong{display:block;margin-bottom:5px;color:#46546b;font-size:12px}.analysis ol{margin:0;padding-left:20px;color:#5d687b;font-size:12px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:11px}.callout-warning{margin-top:12px;padding:12px 15px;border-radius:11px;background:#fff6e5;color:#79571c;font-size:12px}.callout-warning strong{color:#5d4110}.details-toggle{padding:0;border:0;background:none;color:var(--teal);font-size:12px;font-weight:750}.details-toggle:hover{text-decoration:underline}.diagram{padding:19px;border:1px solid var(--line);border-radius:14px;background:var(--card);font:13px/1.55 ui-monospace,monospace;color:#40516a}.diagram .class-title{display:block;margin:-19px -19px 12px;padding:10px 16px;border-bottom:1px solid var(--line);background:#f0f3f7;color:var(--navy);font-weight:800}.uml-line{padding:5px 0}.uml-public{color:var(--teal);font-weight:800}.uml-method{color:#4b5871}.exercise{position:relative;margin:12px 0;padding:17px 18px 16px 58px;border:1px solid var(--line);border-radius:14px;background:var(--card)}.exercise-num{position:absolute;left:16px;top:17px;display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:var(--violet-soft);color:var(--violet);font:800 11px ui-monospace,monospace}.exercise h3{margin:0 0 5px;font-size:15px}.exercise p{margin:4px 0;color:#59667c;font-size:13px}.exercise .deliver{color:#315d58}.done-btn{margin-top:9px;border:1px solid #d6dde7;border-radius:8px;background:#fff;color:#68758c;padding:6px 9px;font-size:10px;font-weight:700}.done-btn[aria-pressed="true"]{border-color:#abd8ce;background:#e8f4f2;color:#08756e}.rubric td:first-child{font-weight:700;color:#394961}.eval-intro{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:15px}.eval-intro p{margin:0;color:var(--muted);font-size:13px}.quiz-q{margin:11px 0;padding:17px 18px;border:1px solid var(--line);border-radius:13px;background:var(--card)}.quiz-q legend,.quiz-q h3{margin:0 0 9px;padding:0;font-size:14px;font-weight:750}.qnum{margin-right:7px;color:var(--teal);font:800 10px ui-monospace,monospace}.option{display:flex;gap:9px;align-items:flex-start;padding:5px 7px;border-radius:8px;color:#58657a;font-size:12px;cursor:pointer}.option:hover{background:#f5f7fa}.option input{margin-top:4px;accent-color:var(--teal)}.q-feedback{display:none;margin-top:8px;padding:8px 10px;border-radius:8px;font-size:11px}.quiz-q.correct{border-color:#abd8ce}.quiz-q.correct .q-feedback{display:block;background:#e8f4f2;color:#14665e}.quiz-q.incorrect{border-color:#e5b8b8}.quiz-q.incorrect .q-feedback{display:block;background:#fff0ef;color:#974143}.quiz-actions{display:flex;gap:10px;align-items:center;margin-top:17px}.primary-btn{border:0;border-radius:10px;background:var(--teal);color:#fff;padding:10px 15px;font-size:12px;font-weight:800}.primary-btn:hover{background:#066660}.secondary-btn{border:1px solid var(--line);border-radius:10px;background:#fff;color:#53617a;padding:9px 13px;font-size:12px;font-weight:700}.score-box{display:none;padding:10px 13px;border-radius:10px;background:var(--navy);color:#fff;font-size:12px;font-weight:700}.reasoning{margin-top:24px}.reason-item{margin:10px 0;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.reason-item h4{margin:0 0 8px;font-size:13px}.reason-item textarea{width:100%;min-height:80px;resize:vertical;border:1px solid #d8e0ea;border-radius:9px;padding:10px;background:#fbfcfd;color:var(--ink);font:13px/1.5 inherit}.reason-item details{margin-top:9px;color:var(--muted);font-size:12px}.reason-item summary{color:var(--teal);font-weight:700;cursor:pointer}.conclusion-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.conclusion{display:flex;gap:10px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:#4e5b70;font-size:13px}.conclusion span{color:var(--teal);font-weight:900}.footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;color:#8a95a6;font-size:11px}.back-top{color:var(--teal);text-decoration:none;font-weight:700}.toast{position:fixed;right:20px;bottom:20px;z-index:30;padding:10px 15px;border-radius:10px;background:#101b31;color:#fff;box-shadow:var(--shadow);font-size:12px;opacity:0;transform:translateY(8px);transition:.22s;pointer-events:none}.toast.show{opacity:1;transform:translateY(0)}body.high-contrast{--paper:#fff;--card:#fff;--line:#9ba9bd;--muted:#3e4b61;--ink:#071327}
+    @media(max-width:1050px){.shell{grid-template-columns:190px minmax(0,1fr);gap:20px;padding-inline:18px}.hero{padding:40px 35px}.brand{min-width:190px}}
+    @media(max-width:760px){.topbar{height:auto;min-height:58px;padding:9px 14px;gap:10px}.brand{min-width:0;font-size:11px}.top-mid{display:none}.top-actions{margin-left:auto}.top-actions button{padding:6px 9px}.shell{display:block;padding:15px 13px 70px}.sidebar{position:relative;top:auto;max-height:none;margin-bottom:15px;padding:10px 12px}.side-label{margin:0 0 7px}.toc{display:flex;gap:4px;overflow:auto;padding-bottom:3px}.toc li+li{margin:0}.toc a{white-space:nowrap;padding:8px 9px;font-size:11px}.toc-num{display:none}.side-note{display:none}.hero{min-height:auto;padding:33px 24px;border-radius:20px}.hero:after{right:-22px;top:-35px;font-size:210px}.hero h1{font-size:47px}.hero .sub{font-size:15px}.hero-question{font-size:12px}.intro-grid,.concept-strip,.split,.two-col,.lab,.conclusion-grid{grid-template-columns:1fr}.section{margin:38px 0}.section-head h2{font-size:24px}.rule-grid{grid-template-columns:1fr}.lab-result{grid-column:auto}.case-head{align-items:flex-start;flex-wrap:wrap;padding:16px}.case-body{padding:16px}.case-head h3{font-size:17px}.table-wrap{border-radius:10px}.footer{flex-direction:column}.eval-intro{align-items:flex-start}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+    html.dark-mode{color-scheme:dark;--ink:#e7edf7;--muted:#a5b2c7;--paper:#0b1220;--card:#131e31;--line:#2b3950;--teal:#58c9bc;--teal-soft:#173a3d;--violet-soft:#2b2545;--shadow:0 12px 36px rgba(0,0,0,.24)}
+    html.dark-mode body{background:var(--paper);color:var(--ink)}
+    html.dark-mode .sidebar,html.dark-mode .intro-card,html.dark-mode .card,html.dark-mode .mini-card,html.dark-mode .rule,html.dark-mode .case,html.dark-mode .table-wrap,html.dark-mode .diagram,html.dark-mode .exercise,html.dark-mode .quiz-q,html.dark-mode .reason-item,html.dark-mode .conclusion{background:var(--card);border-color:var(--line);color:var(--ink)}
+    html.dark-mode .toc a{color:#b8c4d8}html.dark-mode .toc a:hover,html.dark-mode .toc a.active{background:#173a3d;color:#a4eee3}html.dark-mode .side-note,html.dark-mode .rule-num{background:#202d43;color:#b3bfd2}html.dark-mode .intro-card p,html.dark-mode .card p,html.dark-mode .lead,html.dark-mode .mini-card ul,html.dark-mode .rule p,html.dark-mode td,html.dark-mode .case-body>p,html.dark-mode .analysis ol,html.dark-mode .diagram,html.dark-mode .uml-method,html.dark-mode .exercise p,html.dark-mode .conclusion{color:#bac6d8}
+    html.dark-mode .section-head h2,html.dark-mode .rule strong,html.dark-mode .card h3,html.dark-mode .mini-card h4,html.dark-mode .exercise h3,html.dark-mode .reason-item h4{color:#edf2fb}
+    html.dark-mode th,html.dark-mode .diagram .class-title{background:#202d43;color:#d6dfed}html.dark-mode .friend-note{background:#26213c;color:#d1c9ec}html.dark-mode .callout{background:#292441;color:#ded6ff}html.dark-mode .callout strong{color:#f0ebff}html.dark-mode .lab{background:#142d32;border-color:#28514f}html.dark-mode .lab p{color:#b0d2cd}html.dark-mode .lab-controls button,html.dark-mode .lab-result{background:#1a2940;border-color:#39536a;color:#dbe8f6}html.dark-mode .lab-result{color:#dbe8f6}html.dark-mode .analysis{background:#202d43}html.dark-mode .analysis strong{color:#e0e8f4}html.dark-mode .callout-warning{background:#3b3020;color:#f0d6a3}html.dark-mode .callout-warning strong{color:#ffe2a6}html.dark-mode .result-line{background:#263923;color:#c8e89d}html.dark-mode .option{color:#c3cee0}html.dark-mode .option:hover{background:#202d43}html.dark-mode .quiz-q.correct{border-color:#3b8178}html.dark-mode .quiz-q.incorrect{border-color:#9a5558}html.dark-mode .quiz-q .option.correct-choice{background:#173a35;color:#b6f0d4}html.dark-mode .quiz-q .option.incorrect-choice{background:#40282d;color:#ffc5c5}html.dark-mode .quiz-q .answer-mark{color:inherit}html.dark-mode .quiz-q.correct .q-feedback{background:#173a35;color:#b6f0d4}html.dark-mode .quiz-q.incorrect .q-feedback{background:#40282d;color:#ffc5c5}html.dark-mode .secondary-btn,html.dark-mode .done-btn{background:#1a2940;border-color:#40516a;color:#d6dfed}html.dark-mode .done-btn[aria-pressed="true"]{background:#173a3d;color:#a4eee3}html.dark-mode .reason-item textarea{background:#0f192a;border-color:#394963;color:#e7edf7}html.dark-mode .reason-item details{color:#bac6d8}html.dark-mode .footer{border-color:var(--line);color:#a5b2c7}
+    .quiz-q .option.correct-choice{background:#e5f5ed;color:#185b43}.quiz-q .option.incorrect-choice{background:#fff0ef;color:#963d41}.quiz-q .option.correct-choice,.quiz-q .option.incorrect-choice{justify-content:flex-start;font-weight:650}.quiz-q .answer-mark{margin-left:auto;flex:0 0 auto;padding-left:8px;color:inherit;font-size:10px;font-weight:800}.quiz-q .q-feedback{display:block}.quiz-q:not(.correct):not(.incorrect) .q-feedback{display:none}
+    /* Tipografía de lectura ampliada */
+    body{font-size:18px}#inicio{display:block;height:0}.brand{font-size:14px}.top-mid,.top-actions button{font-size:14px}.sidebar .toc a{font-size:14px}.side-label{font-size:12px}.side-note{font-size:13px}.hero .sub{font-size:20px}.hero-question{font-size:16px}.pill{font-size:13px}.intro-card .tiny{font-size:12px}.intro-card p{font-size:16px}.section-head h2{font-size:30px}.section-head p{font-size:16px}.card p{font-size:17px}.rule p{font-size:15px}.mini-card h4{font-size:16px}.mini-card ul{font-size:15px}.callout,.friend-note{font-size:15px}table{font-size:15px}th{font-size:13px}.lab p{font-size:15px}.lab-controls button,.lab-result{font-size:14px}.case-head h3{font-size:21px}.case-head p{font-size:14px}.case-body>p{font-size:16px}.result-line{font-size:14px}.code-top{font-size:12px}.code-top button{font-size:12px}pre{font-size:14px}.analysis strong,.analysis ol,.callout-warning{font-size:14px}.diagram{font-size:15px}.exercise h3{font-size:17px}.exercise p{font-size:15px}.done-btn{font-size:12px}.eval-intro p{font-size:15px}.quiz-q legend{font-size:16px}.option{font-size:14px}.q-feedback{font-size:13px}.primary-btn,.secondary-btn{font-size:14px}.reason-item p,.reason-item details{font-size:15px}.reason-item textarea{font-size:16px}.footer{font-size:13px}
+    @media(max-width:760px){.brand{font-size:11px}.hero .sub{font-size:17px}.hero-question{font-size:15px}.section-head h2{font-size:26px}.case-head h3{font-size:19px}.card p{font-size:16px}pre{font-size:13px}}
+  </style>
+</head>
+<body>
+  <span id="inicio" aria-hidden="true"></span>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">C++</span><span>CUCEI · PROGRAMACIÓN ORIENTADA A OBJETOS</span></div>
+    <div class="top-mid"><span>Progreso de lectura</span><div class="progress-track" aria-label="Progreso de lectura"><div class="progress-fill" id="progressFill"></div></div><span id="progressText">0%</span></div>
+    <div class="top-actions"><button id="themeBtn" type="button" aria-pressed="false" title="Cambiar tema">◐</button><button type="button" onclick="window.print()" title="Imprimir o guardar como PDF">↓ Imprimir</button></div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navegación de la guía">
+      <p class="side-label">En esta guía</p>
+      <nav><ul class="toc" id="toc">
+        <li><a href="#objetivos"><span class="toc-num">00</span>Ruta de aprendizaje</a></li>
+        <li><a href="#concepto"><span class="toc-num">01</span>Concepto y reglas</a></li>
+        <li><a href="#diseno"><span class="toc-num">02</span>Decisiones de diseño</a></li>
+        <li><a href="#casos"><span class="toc-num">03</span>Ejemplos</a></li>
+        <li><a href="#uml"><span class="toc-num">04</span>Operadores y UML</a></li>
+        <li><a href="#practicas"><span class="toc-num">05</span>Ejercicios</a></li>
+        <li><a href="#evaluacion"><span class="toc-num">06</span>Evaluación</a></li>
+        <li><a href="#cierre"><span class="toc-num">07</span>Conclusiones</a></li>
+      </ul></nav>
+      <div class="side-note"><strong>Recorrido sugerido</strong><br>Lee el concepto, predice cada salida, revisa el código y termina con la autoevaluación.</div>
+    </aside>
+
+    <main class="content">
+      <section class="hero" aria-labelledby="titulo">
+        <span class="eyebrow">Guía interactiva · C++17</span>
+        <h1 id="titulo">Sobrecarga<br>de <span>operadores</span></h1>
+        <p class="sub">Del significado de los símbolos a decisiones de diseño orientado a objetos.</p>
+        <div class="hero-question"><b>La pregunta guía</b><span>Si C++ ya sabe sumar números, ¿qué debería significar sumar dos objetos? ¿En qué casos sería incorrecto usar <code>+</code>?</span></div>
+        <div class="hero-meta"><span class="pill"><i class="dot"></i> Conceptos + ejemplos</span><span class="pill">5 programas explicados</span><span class="pill">Práctica + evaluación</span></div>
+      </section>
+
+      <div class="intro-grid" id="objetivos">
+        <article class="intro-card"><span class="tiny">Objetivo</span><p>Comprender la sobrecarga como una interfaz expresiva para tipos definidos por el programador; usar operadores solo cuando su significado sea claro, coherente y verificable.</p></article>
+        <article class="intro-card"><span class="tiny">Aprendizaje esperado</span><p>Al finalizar, podrás elegir, implementar y probar operadores, explicar sus restricciones y representar su notación en un diagrama UML.</p></article>
+      </div>
+      <section class="section" aria-labelledby="resultados-title">
+        <div class="section-head"><span class="section-index">00</span><div><h2 id="resultados-title">Tu ruta de aprendizaje</h2><p>Al concluir esta guía, podrás:</p></div></div>
+        <div class="card"><div class="rule-grid">
+          <div class="rule"><span class="rule-num">01</span><p>Distinguir un operador incorporado, la sobrecarga de operadores y la sobrecarga de funciones.</p></div>
+          <div class="rule"><span class="rule-num">02</span><p>Reconocer cuándo un operador tiene una interpretación natural para una clase.</p></div>
+          <div class="rule"><span class="rule-num">03</span><p>Implementar <code>operator+</code>, <code>operator==</code>, <code>operator&lt;&lt;</code>, <code>operator++</code> y <code>operator[]</code>.</p></div>
+          <div class="rule"><span class="rule-num">04</span><p>Diferenciar operadores miembro y no miembro, y entender cuándo <code>friend</code> podría ser útil.</p></div>
+          <div class="rule"><span class="rule-num">05</span><p>Leer la notación de una operación sobrecargada en UML.</p></div>
+          <div class="rule"><span class="rule-num">06</span><p>Reconocer restricciones del lenguaje y riesgos de un diseño confuso.</p></div>
+          <div class="rule"><span class="rule-num">07</span><p>Probar casos normales, casos límite y situaciones inválidas.</p></div>
+        </div></div>
+      </section>
+
+      <section class="section" id="concepto">
+        <div class="section-head"><span class="section-index">01</span><div><h2>Concepto y reglas del lenguaje</h2><p>Primero el significado; después la sintaxis.</p></div></div>
+        <div class="concept-strip">
+          <article class="card accent-card"><h3>¿Qué significa sobrecargar?</h3><p>Es declarar una función especial, con un nombre de la forma <code class="inline-code">operator&lt;símbolo&gt;</code>, que define el comportamiento de un operador existente cuando intervienen objetos de clases o enumeraciones definidas por el programador.</p><p>Al declarar <code class="inline-code">operator+</code> para <code class="inline-code">Desplazamiento2D</code>, la expresión <code class="inline-code">a + b</code> puede crear otro desplazamiento sumando sus componentes. La notación familiar delega el trabajo a una función.</p></article>
+          <div class="callout"><span class="icon">✳</span><div><strong>Sobrecargar no es inventar</strong><div>No crea símbolos nuevos ni cambia cómo funciona <code>int + int</code>. Da un significado a un operador ya existente para un tipo definido por el usuario.</div></div></div>
+        </div>
+        <div class="card" style="margin-top:14px"><h3>Restricciones que debes recordar</h3><div class="rule-grid">
+          <div class="rule"><span class="rule-num">1</span><p><strong>No hay operadores nuevos.</strong> Solo se sobrecargan operadores existentes que el lenguaje permita.</p></div>
+          <div class="rule"><span class="rule-num">2</span><p><strong>Al menos un operando</strong> debe ser de una clase o enumeración definida por el programador; no puedes redefinir <code>int + int</code>.</p></div>
+          <div class="rule"><span class="rule-num">3</span><p>No se modifica la <strong>precedencia, asociatividad ni cantidad de operandos</strong> del operador.</p></div>
+          <div class="rule"><span class="rule-num">4</span><p><code>::</code>, <code>.</code>, <code>.*</code>, <code>?:</code> y <code>sizeof</code> no pueden sobrecargarse.</p></div>
+          <div class="rule"><span class="rule-num">5</span><p><code>operator=</code>, <code>operator[]</code>, <code>operator()</code> y <code>operator-&gt;</code> deben declararse como miembros de clase.</p></div>
+          <div class="rule"><span class="rule-num">6</span><p>Un método <code>operator+</code> marcado <code>const</code> no modifica directamente el objeto izquierdo (<code>*this</code>).</p></div>
+          <div class="rule"><span class="rule-num">7</span><p>La sobrecarga de <code>&amp;&amp;</code> o <code>||</code> <strong>no conserva el cortocircuito habitual</strong>: ambos operandos se evalúan antes de llamar al operador.</p></div>
+          <div class="rule"><span class="rule-num">8</span><p>Que el lenguaje permita una sobrecarga no la vuelve buena: el diseño profesional prioriza significados comprensibles.</p></div>
+        </div><div class="callout-warning"><strong>Precaución:</strong> antes de diseñar un ejercicio con un operador, confirma que puede sobrecargarse y revisa sus restricciones.</div></div>
+      </section>
+
+      <section class="section" id="diseno">
+        <div class="section-head"><span class="section-index">02</span><div><h2>Decisiones de diseño</h2><p>Usa esta prueba antes de escribir <code>operator</code>.</p></div></div>
+        <div class="card"><h3>¿El significado se anticipa?</h3><p class="lead">Completa la frase: <strong>«El operador ___ aplicado a estos objetos significa ___»</strong>. Si otra persona puede anticipar el resultado, probablemente vas por buen camino.</p>
+          <div class="split" style="margin-top:17px">
+            <div class="mini-card good"><h4>Interpretación natural</h4><ul><li><code>Duracion + Duracion</code>: sumar tiempos.</li><li><code>Fraccion + Fraccion</code>: suma aritmética.</li><li><code>Fraccion == Fraccion</code>: equivalencia.</li><li><code>cout &lt;&lt; objeto</code>: representación legible.</li></ul></div>
+            <div class="mini-card questionable"><h4>Conviene cuestionarla</h4><ul><li><code>Alumno + Alumno</code>: ¿qué resultado expresa?</li><li><code>Cuenta + Cuenta</code>: ¿sumar saldos o fusionar cuentas?</li><li><code>Producto * Producto</code>: significado no definido.</li><li>Usar <code>+</code> para borrar o guardar datos.</li></ul></div>
+          </div>
+        </div>
+        <div class="lab" style="margin-top:14px"><div><h3>Laboratorio: decide antes de codificar</h3><p>Elige un caso y comprueba qué tan predecible es su significado.</p></div><div class="lab-controls" role="group" aria-label="Casos de diseño">
+          <button type="button" data-lab="duracion" aria-pressed="false">Duración + duración</button><button type="button" data-lab="alumno" aria-pressed="false">Alumno + alumno</button><button type="button" data-lab="fraccion" aria-pressed="false">Fracción == fracción</button><button type="button" data-lab="cuenta" aria-pressed="false">Cuenta + cuenta</button>
+        </div><div class="lab-result" id="labResult" aria-live="polite">Selecciona un caso para ver la pregunta de diseño que conviene hacer.</div></div>
+        <div class="card" style="margin-top:14px"><h3>Operador miembro o función no miembro</h3><div class="table-wrap"><table><thead><tr><th>Aspecto</th><th>Miembro de clase</th><th>Función no miembro</th></tr></thead><tbody>
+          <tr><td>Declaración</td><td><code>Resultado operator+(const T&amp; otra) const;</code></td><td><code>Resultado operator+(const T&amp; a, const T&amp; b);</code></td></tr>
+          <tr><td>Operandos explícitos</td><td>El operando izquierdo es <code>*this</code>.</td><td>Ambos operandos son parámetros.</td></tr>
+          <tr><td>Forma conceptual de <code>a + b</code></td><td><code>a.operator+(b)</code></td><td><code>operator+(a, b)</code></td></tr>
+          <tr><td>Uso frecuente</td><td>Asignación, subíndice e incremento.</td><td>Suma simétrica y <code>&lt;&lt;</code> con <code>ostream</code>.</td></tr>
+          <tr><td>Acceso privado</td><td>Accede a los miembros de su objeto.</td><td>Usa la API pública; <code>friend</code> si el acceso especial se justifica.</td></tr>
+        </tbody></table></div><div class="friend-note"><strong><code>friend</code> es opcional.</strong> Una función declarada <code>friend</code> sigue siendo una función no miembro. La declaración solo le da acceso a miembros privados o protegidos; no la convierte en método.</div></div>
+      </section>
+
+      <section class="section" id="casos">
+        <div class="section-head"><span class="section-index">03</span><div><h2>Casos de uso</h2><p>Lee el uso, predice el resultado y luego abre el programa completo.</p></div></div>
+
+        <article class="case"><div class="case-head"><span class="case-badge">CASO 01</span><div><h3>Desplazamiento2D · suma natural</h3><p><code>operator+</code> miembro que crea un resultado nuevo.</p></div></div><div class="case-body"><p>Un robot avanza <code>(3, 2)</code> y luego hace un desplazamiento <code>(−1, 4)</code>. La suma por componentes produce <code>(2, 6)</code>. En UML, <code>operator+</code> aparece como una operación pública normal de la clase.</p>
+          <div class="result-line">Salida: Desplazamiento total: (2, 6)</div>
+          <div class="code-box"><div class="code-top"><span>Programa 1 · operator+ miembro</span><button class="copy-btn" type="button">Copiar código</button></div><pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Desplazamiento2D {
+private:
+    double dx, dy;
+public:
+    Desplazamiento2D(double x, double y) : dx(x), dy(y) {}
+
+    Desplazamiento2D operator+(const Desplazamiento2D&amp; otro) const {
+        return Desplazamiento2D(dx + otro.dx, dy + otro.dy);
+    }
+
+    void mostrar() const {
+        cout &lt;&lt; "(" &lt;&lt; dx &lt;&lt; ", " &lt;&lt; dy &lt;&lt; ")";
+    }
+};
+
+int main() {
+    Desplazamiento2D a(3, 2), b(-1, 4);
+    Desplazamiento2D total = a + b;
+    cout &lt;&lt; "Desplazamiento total: ";
+    total.mostrar();
+    cout &lt;&lt; endl;
+}</code></pre></div>
+          <div class="analysis"><strong>Preguntas de análisis</strong><ol><li>¿Qué parte corresponde al operando izquierdo en <code>a + b</code>?</li><li>¿Por qué <code>operator+</code> devuelve un objeto nuevo?</li><li>¿Qué aporta el <code>const</code> al final del método?</li><li>¿Sería apropiado usar <code>+</code> para borrar uno de los desplazamientos? Justifica.</li></ol></div>
+        </div></article>
+
+        <article class="case"><div class="case-head"><span class="case-badge">CASO 02</span><div><h3>Fraccion · suma, igualdad y salida</h3><p><code>operator+</code>, <code>operator==</code> miembro; <code>operator&lt;&lt;</code> externo.</p></div></div><div class="case-body"><p>La clase mantiene el denominador distinto de cero, lo hace positivo y simplifica con <code>std::gcd</code> (C++17). Así, las fracciones equivalentes comparten la misma representación normalizada.</p>
+          <div class="table-wrap"><table><thead><tr><th>Expresión</th><th>Significado</th><th>Resultado</th></tr></thead><tbody><tr><td><code>a + b</code></td><td>Suma matemática de fracciones</td><td>Fracción nueva</td></tr><tr><td><code>a == b</code></td><td>Mismo valor tras normalizar</td><td><code>bool</code></td></tr><tr><td><code>cout &lt;&lt; a</code></td><td>Escribir en un flujo de salida</td><td><code>ostream&amp;</code></td></tr></tbody></table></div>
+          <div class="result-line" style="margin-top:12px">Salida: Suma: 5/6 · Iguales: true · Error: Denominador igual a cero</div>
+          <div class="code-box"><div class="code-top"><span>Programa 2 · tres operadores</span><button class="copy-btn" type="button">Copiar código</button></div><pre><code>#include &lt;iostream&gt;
+#include &lt;numeric&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+class Fraccion {
+private:
+    int numerador, denominador;
+
+    void normalizar() {
+        if (denominador &lt; 0) {
+            numerador = -numerador;
+            denominador = -denominador;
+        }
+        int divisor = gcd(numerador, denominador);
+        numerador /= divisor;
+        denominador /= divisor;
+    }
+
+public:
+    Fraccion(int n, int d) : numerador(n), denominador(d) {
+        if (d == 0) throw invalid_argument("Denominador igual a cero");
+        normalizar();
+    }
+
+    Fraccion operator+(const Fraccion&amp; otra) const {
+        return Fraccion(numerador * otra.denominador +
+                        otra.numerador * denominador,
+                        denominador * otra.denominador);
+    }
+
+    bool operator==(const Fraccion&amp; otra) const {
+        return numerador == otra.numerador &amp;&amp;
+               denominador == otra.denominador;
+    }
+
+    int getNumerador() const { return numerador; }
+    int getDenominador() const { return denominador; }
+};
+
+ostream&amp; operator&lt;&lt;(ostream&amp; salida, const Fraccion&amp; f) {
+    return salida &lt;&lt; f.getNumerador() &lt;&lt; "/" &lt;&lt; f.getDenominador();
+}
+
+int main() {
+    Fraccion a(1, 2), b(1, 3), c(2, 4);
+    cout &lt;&lt; "Suma: " &lt;&lt; (a + b) &lt;&lt; endl;
+    cout &lt;&lt; "Iguales: " &lt;&lt; boolalpha &lt;&lt; (a == c) &lt;&lt; endl;
+    try {
+        Fraccion invalida(5, 0);
+    } catch (const invalid_argument&amp; e) {
+        cout &lt;&lt; "Error: " &lt;&lt; e.what() &lt;&lt; endl;
+    }
+}</code></pre></div>
+          <div class="two-col" style="margin-top:13px"><div class="analysis"><strong>Analiza el diseño</strong><ol><li>¿Por qué <code>2/4</code> y <code>1/2</code> se consideran iguales?</li><li>¿Por qué <code>operator&lt;&lt;</code> devuelve <code>ostream&amp;</code> y no <code>void</code>?</li></ol></div><div class="analysis"><strong>Ubica la validación</strong><ol start="3"><li>¿Qué excepción protege el invariante?</li><li>¿Qué operaciones son métodos y cuál es función externa?</li></ol></div></div>
+          <div class="callout-warning"><strong>Precaución numérica:</strong> este ejemplo usa <code>int</code> y valores pequeños. En producción, considera el desbordamiento en multiplicaciones y conversiones numéricas.</div>
+        </div></article>
+
+        <article class="case"><div class="case-head"><span class="case-badge">CASO 03</span><div><h3>Contador · prefijo y posfijo <code>++</code></h3><p>El parámetro <code>int</code> sin nombre distingue la forma posfija; no es una cantidad que se suma.</p></div></div><div class="case-body"><p>Ambas formas incrementan, pero devuelven valores distintos: el prefijo devuelve el objeto ya incrementado; el posfijo conserva y devuelve una copia anterior.</p>
+          <div class="table-wrap"><table><thead><tr><th>Expresión</th><th>Qué ocurre</th><th>Valor de la expresión</th></tr></thead><tbody><tr><td><code>++c</code></td><td>Incrementa primero; luego devuelve el objeto</td><td>Valor nuevo</td></tr><tr><td><code>c++</code></td><td>Guarda copia previa; después incrementa</td><td>Valor anterior</td></tr></tbody></table></div>
+          <div class="result-line" style="margin-top:12px">Salida: Posfijo: 5 · Prefijo: 7 · Valor final: 7</div>
+          <div class="code-box"><div class="code-top"><span>Programa 3 · prefijo y posfijo</span><button class="copy-btn" type="button">Copiar código</button></div><pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Contador {
+private:
+    int valor;
+public:
+    Contador(int inicio = 0) : valor(inicio) {}
+
+    Contador&amp; operator++() {       // Prefijo: ++c
+        ++valor;
+        return *this;
+    }
+
+    Contador operator++(int) {      // Posfijo: c++
+        Contador anterior = *this;
+        ++valor;
+        return anterior;
+    }
+
+    int obtenerValor() const { return valor; }
+};
+
+int main() {
+    Contador C(5);
+    cout &lt;&lt; "Posfijo: " &lt;&lt; (C++).obtenerValor() &lt;&lt; endl;
+    cout &lt;&lt; "Prefijo: " &lt;&lt; (++C).obtenerValor() &lt;&lt; endl;
+    cout &lt;&lt; "Valor final: " &lt;&lt; C.obtenerValor() &lt;&lt; endl;
+}</code></pre></div>
+          <div class="friend-note"><strong>Convención habitual:</strong> prefijo devuelve una referencia (<code>Contador&amp;</code>) y posfijo devuelve una copia (<code>Contador</code>), para seguir el comportamiento esperado del incremento incorporado.</div>
+        </div></article>
+
+        <article class="case"><div class="case-head"><span class="case-badge">CASO 04</span><div><h3>Calificaciones · subíndice seguro</h3><p><code>operator[]</code> miembro con validación de límites.</p></div></div><div class="case-body"><p>Una colección de tres notas permite consultar por índice. Los índices fuera de rango lanzan <code>out_of_range</code>. El operador devuelve <code>int</code> por valor para permitir consulta sin abrir la modificación directa.</p>
+          <div class="result-line">Salida: Segunda nota: 90 · Error: Indice de calificacion invalido</div>
+          <div class="code-box"><div class="code-top"><span>Programa 4 · operator[] validado</span><button class="copy-btn" type="button">Copiar código</button></div><pre><code>#include &lt;array&gt;
+#include &lt;cstddef&gt;
+#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+using namespace std;
+
+class Calificaciones {
+private:
+    array&lt;int, 3&gt; notas{80, 90, 100};
+public:
+    int operator[](size_t posicion) const {
+        if (posicion &gt;= notas.size()) {
+            throw out_of_range("Indice de calificacion invalido");
+        }
+        return notas[posicion];
+    }
+};
+
+int main() {
+    Calificaciones grupo;
+    cout &lt;&lt; "Segunda nota: " &lt;&lt; grupo[1] &lt;&lt; endl;
+    try {
+        cout &lt;&lt; grupo[5] &lt;&lt; endl;
+    } catch (const out_of_range&amp; e) {
+        cout &lt;&lt; "Error: " &lt;&lt; e.what() &lt;&lt; endl;
+    }
+}</code></pre></div>
+          <div class="callout-warning"><strong>Decisión intencional:</strong> como devuelve por valor, <code>grupo[0] = 95</code> no permite modificar la nota. El operador se conserva solo para consultar; la modificación puede exponerse mediante un método validado.</div>
+        </div></article>
+
+        <article class="case"><div class="case-head"><span class="case-badge">CASO 05</span><div><h3>Duracion · suma no miembro</h3><p>Dos parámetros explícitos; acceso mediante la API pública y sin necesidad de <code>friend</code>.</p></div></div><div class="case-body"><p>La suma de dos actividades es una operación simétrica. La función externa puede consultar los minutos con un método público y construir una nueva duración.</p>
+          <div class="result-line">Salida: Total: 60 minutos</div>
+          <div class="code-box"><div class="code-top"><span>Programa 5 · operator+ externo</span><button class="copy-btn" type="button">Copiar código</button></div><pre><code>#include &lt;iostream&gt;
+using namespace std;
+
+class Duracion {
+private:
+    int minutos;
+public:
+    Duracion(int m) : minutos(m) {}
+    int obtenerMinutos() const { return minutos; }
+};
+
+Duracion operator+(const Duracion&amp; a, const Duracion&amp; b) {
+    return Duracion(a.obtenerMinutos() + b.obtenerMinutos());
+}
+
+int main() {
+    Duracion actividad(45), descanso(15);
+    cout &lt;&lt; "Total: "
+         &lt;&lt; (actividad + descanso).obtenerMinutos()
+         &lt;&lt; " minutos" &lt;&lt; endl;
+}</code></pre></div>
+        </div></article>
+      </section>
+
+      <section class="section" id="uml">
+        <div class="section-head"><span class="section-index">04</span><div><h2>Operadores sobrecargados en UML</h2><p>No existe una relación UML especial por usar un operador.</p></div></div>
+        <div class="split"><div class="card"><h3>Cómo leer la firma</h3><p>En UML se representa como una operación de la clase: nombre, parámetros, tipo de retorno y visibilidad.</p><p>El primer <code>+</code> de <code>+ operator+(otro: const Duracion&amp;): Duracion</code> señala que la operación es pública. El signo incluido en <code>operator+</code> identifica el operador de C++.</p><div class="callout-warning"><strong>Error frecuente:</strong> confundir el símbolo de visibilidad de UML con el operador <code>+</code> del método.</div></div>
+          <div class="diagram" role="img" aria-label="Ejemplo de clase UML Duracion"><span class="class-title">Duracion</span><div class="uml-line"><span class="uml-public">+ </span><span class="uml-method">Duracion(m: int)</span></div><div class="uml-line"><span class="uml-public">+ </span><span class="uml-method">obtenerMinutos(): int</span></div><div class="uml-line"><span class="uml-public">+ </span><span class="uml-method">operator+(otro: const Duracion&amp;): Duracion</span></div></div></div>
+        <div class="card" style="margin-top:14px"><h3>Guía rápida para elegir</h3><div class="table-wrap"><table><thead><tr><th>Necesidad del dominio</th><th>Operador posible</th><th>Pregunta de validación</th></tr></thead><tbody><tr><td>Combinar dos magnitudes compatibles</td><td><code>+</code></td><td>¿Se espera un resultado nuevo?</td></tr><tr><td>Comparar equivalencia de valores</td><td><code>==</code></td><td>¿La igualdad está definida?</td></tr><tr><td>Mostrar un objeto en consola</td><td><code>&lt;&lt;</code></td><td>¿La representación es clara y estable?</td></tr><tr><td>Avanzar una unidad de estado</td><td><code>++</code></td><td>¿Qué significa exactamente aumentar uno?</td></tr><tr><td>Consultar una posición</td><td><code>[]</code></td><td>¿Hay un índice natural y control de límites?</td></tr></tbody></table></div></div>
+      </section>
+
+      <section class="section" id="practicas">
+        <div class="section-head"><span class="section-index">05</span><div><h2>Ejercicios de repaso</h2><p>Secuencia sugerida: interpretar → justificar → diseñar UML → corrida de escritorio → codificar → probar → presentar.</p></div></div>
+        <article class="exercise"><span class="exercise-num">01</span><h3>Decisiones de diseño · sin programar</h3><p>Decide si usarías sobrecarga para: a) sumar dos duraciones; b) combinar dos alumnos; c) comparar fechas; d) fusionar cuentas bancarias; e) imprimir una fracción; f) consultar la calificación en la posición 2.</p><p class="deliver"><strong>Entrega:</strong> tabla con decisión, significado, tipo de retorno y posible riesgo de ambigüedad.</p><button class="done-btn" type="button" data-exercise="1" aria-pressed="false">○ Marcar como revisada</button></article>
+        <article class="exercise"><span class="exercise-num">02</span><h3>Duración con suma e igualdad</h3><p>Amplía el Programa 5 con <code>operator==</code>. Verifica si <code>45 + 15</code> equivale a <code>Duracion(60)</code>.</p><p class="deliver"><strong>Entrega:</strong> UML, archivo <code>.cpp</code>, salida, dos casos de prueba y explicación de por qué <code>operator+</code> no modifica los operandos.</p><button class="done-btn" type="button" data-exercise="2" aria-pressed="false">○ Marcar como revisada</button></article>
+        <article class="exercise"><span class="exercise-num">03</span><h3>Fracciones con validación y resta</h3><p>Partiendo del Programa 2, agrega <code>operator-</code> y comprueba que <code>3/4 − 1/2 = 1/4</code>. Verifica que denominador cero produce una excepción capturada con <code>try-catch</code>.</p><p class="deliver"><strong>Entrega:</strong> UML, código, prueba válida, prueba inválida y conclusión.</p><button class="done-btn" type="button" data-exercise="3" aria-pressed="false">○ Marcar como revisada</button></article>
+        <article class="exercise"><span class="exercise-num">04</span><h3>Contador con prefijo y posfijo</h3><p>Partiendo de <code>Contador c(2)</code>, evalúa <code>x = ++c;</code>, <code>y = c++;</code>, <code>z = c++;</code>. Registra los valores de <code>x</code>, <code>y</code>, <code>z</code> y <code>c</code>, y verifica con un programa.</p><p class="deliver"><strong>Entrega:</strong> tabla de corrida, código y explicación de las dos versiones de <code>operator++</code>.</p><button class="done-btn" type="button" data-exercise="4" aria-pressed="false">○ Marcar como revisada</button></article>
+        <article class="exercise"><span class="exercise-num">05</span><h3>Calificaciones seguras</h3><p>Agrega <code>cambiarNota(posicion, nuevaNota)</code>, validando posición existente y nota de 0 a 100. Conserva <code>operator[]</code> solo para consulta. Prueba índices 0, 2 y 3, y valores −10 y 110.</p><p class="deliver"><strong>Entrega:</strong> código, cinco pruebas, mensajes de excepción y reflexión sobre encapsulamiento.</p><button class="done-btn" type="button" data-exercise="5" aria-pressed="false">○ Marcar como revisada</button></article>
+        <article class="exercise"><span class="exercise-num">06</span><h3>Detectar una sobrecarga engañosa</h3><p>Analiza <code>class Alumno { ... Alumno operator+(const Alumno&amp;) const; };</code> sin significado definido. Expón dos interpretaciones posibles y propone un método con nombre expresivo o un modelo alternativo.</p><p class="deliver"><strong>Entrega:</strong> argumento escrito, diagrama o pseudocódigo y propuesta de rediseño.</p><button class="done-btn" type="button" data-exercise="6" aria-pressed="false">○ Marcar como revisada</button></article>
+        <div class="card"><h3>Rúbrica de las prácticas</h3><div class="table-wrap"><table class="rubric"><thead><tr><th>Criterio</th><th>Ponderación</th><th>Evidencia</th></tr></thead><tbody><tr><td>Modelo y semántica del operador</td><td>25 %</td><td>Justificación y UML</td></tr><tr><td>Implementación C++</td><td>30 %</td><td>Compilación y comportamiento</td></tr><tr><td>Validaciones y pruebas</td><td>25 %</td><td>Casos normales, límites y errores</td></tr><tr><td>Claridad y explicación</td><td>20 %</td><td>Código legible y conclusiones</td></tr></tbody></table></div><p>En la retroalimentación, revisa primero la correspondencia entre modelo conceptual, operador elegido y comportamiento; después, la sintaxis.</p></div>
+      </section>
+
+      <section class="section" id="evaluacion">
+        <div class="section-head"><span class="section-index">06</span><div><h2>Evaluación interactiva</h2><p>Responde las 15 preguntas y revisa el resultado con retroalimentación.</p></div></div>
+        <div class="eval-intro"><p>Selecciona una opción por pregunta; puedes cambiar tus respuestas antes de calificar.</p><span class="pill" style="background:#e8f4f2;color:#176e68">15 reactivos · selección múltiple</span></div>
+        <form id="quizForm">
+          <fieldset class="quiz-q" data-answer="B"><legend><span class="qnum">01</span>¿Qué describe mejor la sobrecarga de operadores?</legend><label class="option"><input type="radio" name="q1" value="A"> Crear símbolos nuevos para cualquier operación.</label><label class="option"><input type="radio" name="q1" value="B"> Definir operadores existentes para tipos definidos por el usuario.</label><label class="option"><input type="radio" name="q1" value="C"> Modificar el significado de <code>int + int</code>.</label><label class="option"><input type="radio" name="q1" value="D"> Sustituir las clases por funciones.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="C"><legend><span class="qnum">02</span>¿Qué situación justifica mejor un <code>operator+</code>?</legend><label class="option"><input type="radio" name="q2" value="A"> Eliminar una cuenta bancaria.</label><label class="option"><input type="radio" name="q2" value="B"> Registrar un alumno nuevo.</label><label class="option"><input type="radio" name="q2" value="C"> Sumar dos duraciones compatibles.</label><label class="option"><input type="radio" name="q2" value="D"> Enviar una notificación.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="A"><legend><span class="qnum">03</span>En <code>a + b</code>, si <code>operator+</code> es miembro de la clase de <code>a</code>, ¿qué representa <code>b</code>?</legend><label class="option"><input type="radio" name="q3" value="A"> El argumento explícito de <code>operator+</code>.</label><label class="option"><input type="radio" name="q3" value="B"> El objeto <code>this</code>.</label><label class="option"><input type="radio" name="q3" value="C"> El nombre del constructor.</label><label class="option"><input type="radio" name="q3" value="D"> Un operador unario.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="D"><legend><span class="qnum">04</span>¿Cuál operador de la lista no puede sobrecargarse?</legend><label class="option"><input type="radio" name="q4" value="A"><code>==</code></label><label class="option"><input type="radio" name="q4" value="B"><code>[]</code></label><label class="option"><input type="radio" name="q4" value="C"><code>+</code></label><label class="option"><input type="radio" name="q4" value="D"><code>::</code></label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="B"><legend><span class="qnum">05</span>En C++17, ¿qué operador debe ser miembro de una clase?</legend><label class="option"><input type="radio" name="q5" value="A"><code>&lt;&lt;</code> para <code>ostream</code>.</label><label class="option"><input type="radio" name="q5" value="B"><code>[]</code></label><label class="option"><input type="radio" name="q5" value="C">Suma binaria <code>+</code>.</label><label class="option"><input type="radio" name="q5" value="D"><code>==</code></label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="A"><legend><span class="qnum">06</span>¿Qué aporta <code>const</code> al final de un método <code>operator+</code>?</legend><label class="option"><input type="radio" name="q6" value="A"> Impide modificar directamente miembros no mutables a través de <code>this</code>.</label><label class="option"><input type="radio" name="q6" value="B"> Obliga a sumar solamente enteros.</label><label class="option"><input type="radio" name="q6" value="C"> Convierte el método en constructor.</label><label class="option"><input type="radio" name="q6" value="D"> Permite redefinir <code>int + int</code>.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="C"><legend><span class="qnum">07</span>¿Qué devuelve normalmente un <code>operator==</code> bien diseñado?</legend><label class="option"><input type="radio" name="q7" value="A"><code>ostream&amp;</code></label><label class="option"><input type="radio" name="q7" value="B">Una copia de la clase siempre.</label><label class="option"><input type="radio" name="q7" value="C"><code>bool</code></label><label class="option"><input type="radio" name="q7" value="D"><code>void</code></label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="B"><legend><span class="qnum">08</span>¿Por qué <code>operator&lt;&lt;</code> suele devolver <code>ostream&amp;</code>?</legend><label class="option"><input type="radio" name="q8" value="A">Para impedir imprimir objetos.</label><label class="option"><input type="radio" name="q8" value="B">Para permitir encadenar expresiones de salida.</label><label class="option"><input type="radio" name="q8" value="C">Para cambiar el operador <code>+</code>.</label><label class="option"><input type="radio" name="q8" value="D">Para cambiar la precedencia.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="D"><legend><span class="qnum">09</span>¿Qué distingue <code>operator++()</code> de <code>operator++(int)</code>?</legend><label class="option"><input type="radio" name="q9" value="A">El segundo recibe necesariamente un incremento elegido por el usuario.</label><label class="option"><input type="radio" name="q9" value="B">No existe distinción: son firmas idénticas.</label><label class="option"><input type="radio" name="q9" value="C">El primero es posfijo y el segundo es prefijo.</label><label class="option"><input type="radio" name="q9" value="D">El primero es prefijo y el segundo posfijo.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="A"><legend><span class="qnum">10</span>Con <code>Contador c(5)</code>, ¿qué valor produce <code>(c++).obtenerValor()</code>?</legend><label class="option"><input type="radio" name="q10" value="A">5</label><label class="option"><input type="radio" name="q10" value="B">6</label><label class="option"><input type="radio" name="q10" value="C">7</label><label class="option"><input type="radio" name="q10" value="D">Error obligado de compilación.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="C"><legend><span class="qnum">11</span>En la clase <code>Calificaciones</code>, ¿qué ocurre al evaluar <code>grupo[5]</code>?</legend><label class="option"><input type="radio" name="q11" value="A">Devuelve la última nota.</label><label class="option"><input type="radio" name="q11" value="B">Devuelve siempre cero.</label><label class="option"><input type="radio" name="q11" value="C">Lanza <code>out_of_range</code>.</label><label class="option"><input type="radio" name="q11" value="D">Crea una posición nueva.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="B"><legend><span class="qnum">12</span>¿Qué indica el primer <code>+</code> en UML: <code>+ operator+(...): Tipo</code>?</legend><label class="option"><input type="radio" name="q12" value="A">Una suma obligatoria.</label><label class="option"><input type="radio" name="q12" value="B">Que la operación es pública.</label><label class="option"><input type="radio" name="q12" value="C">Herencia múltiple.</label><label class="option"><input type="radio" name="q12" value="D">Que el método es estático.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="A"><legend><span class="qnum">13</span>¿Qué es cierto sobre una función <code>operator&lt;&lt;</code> declarada <code>friend</code>?</legend><label class="option"><input type="radio" name="q13" value="A">Sigue siendo no miembro, pero obtiene acceso especial.</label><label class="option"><input type="radio" name="q13" value="B">Se convierte automáticamente en método.</label><label class="option"><input type="radio" name="q13" value="C">No puede operar con <code>ostream</code>.</label><label class="option"><input type="radio" name="q13" value="D">Modifica la precedencia de <code>&lt;&lt;</code>.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="D"><legend><span class="qnum">14</span>¿Cuál afirmación sobre sobrecargar <code>&amp;&amp;</code> es más precisa?</legend><label class="option"><input type="radio" name="q14" value="A">Siempre detiene la evaluación del segundo operando.</label><label class="option"><input type="radio" name="q14" value="B">Solo funciona entre enteros.</label><label class="option"><input type="radio" name="q14" value="C">Crea un operador llamado <code>&amp;&amp;&amp;</code>.</label><label class="option"><input type="radio" name="q14" value="D">No conserva el cortocircuito habitual del operador incorporado.</label><div class="q-feedback"></div></fieldset>
+          <fieldset class="quiz-q" data-answer="C"><legend><span class="qnum">15</span>¿Qué criterio debe orientar la selección de un operador?</legend><label class="option"><input type="radio" name="q15" value="A">Que el código sea lo más corto posible, sin importar el sentido.</label><label class="option"><input type="radio" name="q15" value="B">Que oculte todas las comprobaciones.</label><label class="option"><input type="radio" name="q15" value="C">Que el significado sea natural y predecible para el dominio.</label><label class="option"><input type="radio" name="q15" value="D">Que todas las clases tengan <code>operator+</code>.</label><div class="q-feedback"></div></fieldset>
+          <div class="quiz-actions"><button class="primary-btn" type="submit">Calificar respuestas</button><button class="secondary-btn" type="button" id="resetQuiz">Intentar de nuevo</button><div class="score-box" id="scoreBox" aria-live="polite"></div></div>
+        </form>
+        <div class="reasoning"><h3>Preguntas de análisis y razonamiento</h3>
+          <div class="reason-item"><h4>16 · Transferencias entre cuentas</h4><p>Un compañero propone <code>operator+</code> en <code>Cuenta</code> para «transferir dinero entre dos cuentas». ¿Por qué puede ser ambiguo? Diseña una operación con nombre más claro.</p><textarea aria-label="Respuesta a la pregunta 16" placeholder="Escribe tu argumento y una alternativa..."></textarea><details><summary>Ver puntos que debe cubrir una buena respuesta</summary><p>Explica al menos dos interpretaciones posibles (sumar saldos, combinar cuentas, transferir de una a otra) y propone un nombre explícito como <code>transferirA(...)</code> con reglas claras sobre origen, destino y saldo.</p></details></div>
+          <div class="reason-item"><h4>17 · Igualdad de fracciones</h4><p>¿Por qué normalizar <code>2/4</code> a <code>1/2</code> simplifica <code>operator==</code>? Menciona una precaución numérica del ejemplo.</p><textarea aria-label="Respuesta a la pregunta 17" placeholder="Explica la representación canónica y una limitación numérica..."></textarea><details><summary>Ver puntos que debe cubrir una buena respuesta</summary><p>Al normalizar signo y divisor, fracciones equivalentes quedan con numerador y denominador iguales; la comparación puede revisar esos dos campos. Las multiplicaciones con <code>int</code> pueden desbordarse.</p></details></div>
+          <div class="reason-item"><h4>18 · Leer UML</h4><p>Interpreta <code>+ operator+(otro: const Duracion&amp;): Duracion</code>: indica visibilidad, nombre, parámetro y tipo de retorno.</p><textarea aria-label="Respuesta a la pregunta 18" placeholder="Describe cada parte de la firma..."></textarea><details><summary>Ver respuesta esperada</summary><p>El primer <code>+</code> indica visibilidad pública; el nombre de la operación es <code>operator+</code>; recibe <code>otro</code> como referencia constante a <code>Duracion</code>; devuelve un objeto <code>Duracion</code>.</p></details></div>
+        </div>
+      </section>
+
+      <section class="section" id="cierre">
+        <div class="section-head"><span class="section-index">07</span><div><h2>Conclusiones</h2><p>Qué llevarte al siguiente ejercicio.</p></div></div>
+        <div class="conclusion-grid"><div class="conclusion"><span>↗</span><div>La sobrecarga expresa operaciones familiares para tipos definidos por el programador, sin alterar las reglas esenciales de los operadores incorporados.</div></div><div class="conclusion"><span>↗</span><div>El diseño empieza preguntando qué significa la operación para esos objetos, no escribiendo <code>operator</code>.</div></div><div class="conclusion"><span>↗</span><div><code>const</code>, el tipo de retorno y las validaciones son tan importantes como el operador elegido.</div></div><div class="conclusion"><span>↗</span><div>En UML, los operadores se dibujan como operaciones de clase y no necesitan una relación especial.</div></div><div class="conclusion"><span>↗</span><div>Si la sobrecarga aclara el código, es útil. Si crea ambigüedad conceptual, conviene un método con nombre explícito.</div></div></div>
+        <div class="card" style="margin-top:16px;text-align:center;background:var(--navy);color:#fff;border:0"><p style="margin:0;color:#cbd5e5;font-size:14px">La pregunta que guía cada sobrecarga:</p><p style="margin:6px 0 0;color:var(--lime);font-weight:800;font-size:20px">¿Una persona puede anticipar qué hará esta expresión?</p></div>
+      </section>
+      <footer class="footer"><span>CUCEI · Programación Orientada a Objetos · Guía de aprendizaje C++</span><a class="back-top" href="#inicio">Volver al inicio ↑</a></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    (() => {
+      const $ = (s, root=document) => root.querySelector(s);
+      const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+      const toast = (message) => { const el=$('#toast'); el.textContent=message; el.classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('show'),1800); };
+
+      $('.back-top').addEventListener('click', event => {
+        event.preventDefault();
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({top: 0, behavior: reducedMotion ? 'auto' : 'smooth'});
+      });
+
+      // Sigue la preferencia del sistema hasta que la persona elija un tema manualmente.
+      const themeKey = 'sobrecarga-theme';
+      const themeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+      const themeButton = $('#themeBtn');
+      let savedTheme = null;
+      try { savedTheme = localStorage.getItem(themeKey); } catch (_) {}
+      const applyTheme = dark => {
+        document.documentElement.classList.toggle('dark-mode', dark);
+        themeButton.setAttribute('aria-pressed', String(dark));
+        themeButton.textContent = dark ? '☀' : '◐';
+        $('meta[name="theme-color"]').content = dark ? '#0b1220' : '#101b31';
+      };
+      applyTheme(savedTheme ? savedTheme === 'dark' : themeMedia.matches);
+      themeButton.addEventListener('click', () => {
+        const dark = !document.documentElement.classList.contains('dark-mode');
+        applyTheme(dark);
+        savedTheme = dark ? 'dark' : 'light';
+        try { localStorage.setItem(themeKey, savedTheme); } catch (_) {}
+      });
+      const followSystemTheme = event => { if (!savedTheme) applyTheme(event.matches); };
+      if (themeMedia.addEventListener) themeMedia.addEventListener('change', followSystemTheme);
+      else if (themeMedia.addListener) themeMedia.addListener(followSystemTheme);
+
+      // Progreso de lectura según las secciones visitadas.
+      const sections = $$('.content > section.section');
+      const visited = new Set();
+      const fill = $('#progressFill'), pct = $('#progressText');
+      const updateProgress = () => { const n=Math.round(visited.size/sections.length*100); fill.style.width=n+'%'; pct.textContent=n+'%'; };
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(entries => entries.forEach(entry => { if(entry.isIntersecting){ visited.add(entry.target.id); updateProgress(); } }), {threshold:.22});
+        sections.forEach(section => observer.observe(section));
+      }
+      const links = $$('#toc a');
+      const navObserver = new IntersectionObserver(entries => entries.forEach(entry => { if(entry.isIntersecting) links.forEach(a => a.classList.toggle('active', a.hash === '#'+entry.target.id)); }), {rootMargin:'-18% 0px -68% 0px'});
+      sections.forEach(section => navObserver.observe(section));
+
+      // Copiar cualquier programa completo.
+      $$('.copy-btn').forEach(btn => btn.addEventListener('click', async () => {
+        const code = $('code', btn.closest('.code-box')).innerText;
+        try { await navigator.clipboard.writeText(code); toast('Código copiado'); }
+        catch { const area=document.createElement('textarea'); area.value=code; document.body.appendChild(area); area.select(); document.execCommand('copy'); area.remove(); toast('Código copiado'); }
+      }));
+
+      // Simulador de decisión de diseño.
+      const labData = {
+        duracion:['Suele ser natural.','La suma de dos duraciones compatibles produce una duración nueva y predecible.'],
+        alumno:['Necesita una definición antes de sobrecargarse.','¿Combinar expedientes, formar equipo o sumar calificaciones? Si no hay una respuesta obvia, usa un método con nombre explícito.'],
+        fraccion:['Es natural.','La igualdad compara valores matemáticos; normalizar las fracciones permite una comparación coherente.'],
+        cuenta:['Conviene cuestionarla.','¿Se suman saldos, se fusionan cuentas o se transfiere dinero? La operación puede tener efectos y direcciones distintas. Un método con nombre comunica mejor la intención.']
+      };
+      $$('[data-lab]').forEach(btn => btn.addEventListener('click', () => { $$('[data-lab]').forEach(b=>b.setAttribute('aria-pressed','false')); btn.setAttribute('aria-pressed','true'); const [title,detail]=labData[btn.dataset.lab]; $('#labResult').innerHTML='<strong>'+title+'</strong> '+detail; }));
+
+      // Checklist de prácticas, guardado localmente en este navegador.
+      $$('[data-exercise]').forEach(btn => {
+        const key='sobrecarga-practica-'+btn.dataset.exercise;
+        const paint=on=>{btn.setAttribute('aria-pressed',String(on));btn.textContent=on?'✓ Revisada':'○ Marcar como revisada';};
+        paint(localStorage.getItem(key)==='1');
+        btn.addEventListener('click',()=>{const on=btn.getAttribute('aria-pressed')!=='true';localStorage.setItem(key,on?'1':'0');paint(on);});
+      });
+
+      // Calificación y retroalimentación del cuestionario.
+      const explanations = [
+        'La sobrecarga define el comportamiento de operadores existentes para tipos definidos por el usuario.',
+        'Sumar tiempos compatibles tiene una interpretación matemática y predecible.',
+        'En un operador miembro binario, el lado izquierdo es *this y b llega como parámetro.',
+        'El operador de resolución de ámbito :: no puede sobrecargarse.',
+        'operator[] debe declararse como miembro de la clase.',
+        'Un método const no puede modificar directamente el objeto a través de this.',
+        'La igualdad de valores produce verdadero o falso.',
+        'Devolver la referencia al flujo permite encadenar cout << a << b.',
+        'La firma sin parámetro es prefijo; el parámetro int ficticio distingue el posfijo.',
+        'El posfijo devuelve la copia previa: c vale 5 al evaluar el resultado de c++.',
+        'La implementación comprueba el límite y lanza std::out_of_range.',
+        'En UML, + es el indicador de visibilidad pública.',
+        'friend otorga acceso, pero la función sigue siendo no miembro.',
+        'En operadores lógicos sobrecargados, los operandos ya se evaluaron antes de la llamada.',
+        'Una sobrecarga debe corresponder a una expectativa natural del dominio.'
+      ];
+      $('#quizForm').addEventListener('submit', e => {
+        e.preventDefault();
+        let score = 0;
+        $$('.quiz-q').forEach((q, i) => {
+          const selected = $('input:checked', q);
+          const correctInput = $(`input[value="${q.dataset.answer}"]`, q);
+          const correctLabel = correctInput.closest('.option');
+          const selectedLabel = selected ? selected.closest('.option') : null;
+          const ok = !!selected && selected.value === q.dataset.answer;
+          q.classList.toggle('correct', ok);
+          q.classList.toggle('incorrect', !ok);
+          $$('.answer-mark', q).forEach(mark => mark.remove());
+          $$('.option', q).forEach(option => option.classList.remove('correct-choice', 'incorrect-choice'));
+          correctLabel.classList.add('correct-choice');
+          const addMark = (label, text) => { const mark=document.createElement('span'); mark.className='answer-mark'; mark.textContent=text; label.appendChild(mark); };
+          addMark(correctLabel, '✓ Correcta');
+          if (selectedLabel && !ok) {
+            selectedLabel.classList.add('incorrect-choice');
+            addMark(selectedLabel, 'Tu respuesta');
+          }
+          if (ok) score++;
+          const correctText = correctLabel.textContent.replace('✓ Correcta', '').trim();
+          $('.q-feedback', q).textContent = ok
+            ? 'Correcto. ' + explanations[i]
+            : (selected ? 'Incorrecto. ' : 'Sin respuesta. ') + 'La opción correcta es ' + q.dataset.answer + ': ' + correctText + '. ' + explanations[i];
+        });
+        const box=$('#scoreBox');
+        box.style.display='block';
+        box.textContent=`Resultado: ${score} de 15 (${Math.round(score/15*100)} %). ${score>=12?'¡Muy buen dominio!':score>=8?'Buen avance; revisa las opciones señaladas.':'Vuelve a los casos de código y prueba otra vez.'}`;
+        box.scrollIntoView({behavior:'smooth',block:'nearest'});
+      });
+      $('#resetQuiz').addEventListener('click', () => {
+        $('#quizForm').reset();
+        $$('.quiz-q').forEach(q => {
+          q.classList.remove('correct', 'incorrect');
+          $$('.answer-mark', q).forEach(mark => mark.remove());
+          $$('.option', q).forEach(option => option.classList.remove('correct-choice', 'incorrect-choice'));
+          $('.q-feedback', q).textContent='';
+        });
+        $('#scoreBox').style.display='none';
+      });
+    })();
+  </script>
+</body>
+</html>
